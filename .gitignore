@@ -11,3 +11,4 @@ devenv.local.yaml
 server/output/speech/
 server/models/tts/
 server/models/stt/vosk-model-en-us-0.22/
+server/.env

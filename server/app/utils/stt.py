@@ -21,7 +21,9 @@ def speech_to_text(audio_path: str | Path) -> str:
 
 if __name__ == "__main__":
     SERVER_DIR = Path(__file__).resolve().parents[2]
-    test_wav = SERVER_DIR / "output" / "speech" / "test_text_1.wav"
+    test_wav = Path(
+        "/home/alex/Development/projects/Knoweldge_bro/server/app/utils/output/audio/tiktok_audio.wav"
+    )
 
     if test_wav.exists():
         print("Transcribing with faster-whisper...")

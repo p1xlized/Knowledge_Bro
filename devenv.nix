@@ -7,7 +7,8 @@
 {
   packages = with pkgs; [
     zlib
-    stdenv.cc.cc.lib # Provides libstdc++.so.6
+    stdenv.cc.cc.lib
+    ffmpeg # Provides libstdc++.so.6
   ];
   # https://devenv.sh/languages/
   languages.python = {
