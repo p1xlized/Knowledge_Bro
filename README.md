@@ -1,5 +1,5 @@
 # 🦉 Sleepless Owl
-
+![Sleepless Owl Logo](https://raw.githubusercontent.com/p1xlized/Sleepless_Owl/refs/heads/main/assets/wip_log.png)
 
 > **Your automated night owl for personal knowledge management.** Save articles, media, and videos into a private, self-hosted database. Automatically convert long-form text into audio for on-the-go learning, and turn videos into structured, actionable summaries.
 
