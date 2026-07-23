@@ -1,0 +1,102 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Owly</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+    </head>
+    <body class="bg-slate-950 text-slate-100 min-h-screen p-6 md:p-10">
+        <div class="max-w-7xl mx-auto space-y-6">
+            <!-- Top Header -->
+            <header
+                class="flex justify-between items-center border-b border-slate-800/80 pb-5"
+            >
+                <div>
+                    <h1
+                        class="text-2xl font-extrabold tracking-tight text-white flex items-center gap-2"
+                    >
+                        ⚡ Owly
+                    </h1>
+                    <p class="text-xs text-slate-400 mt-1">
+                        Captured articles & videos feed
+                    </p>
+                </div>
+            </header>
+
+            <!-- Filter Control Bar -->
+            <form
+                hx-get="/dashboard"
+                hx-target="#content-list"
+                hx-trigger="change"
+                hx-push-url="true"
+                class="bg-slate-900/90 p-4 rounded-xl border border-slate-800 shadow-lg flex flex-wrap gap-4 items-center justify-between"
+            >
+                <div class="flex flex-wrap gap-3 items-center">
+                    <!-- Filter 1: Read State -->
+                    <div class="flex flex-col">
+                        <label
+                            class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1"
+                            >State</label
+                        >
+                        <select
+                            name="is_seen"
+                            class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                        >
+                            <option value="">All Items</option>
+                            <option value="false" selected>Unseen Only</option>
+                            <option value="true">Seen Only</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter 2: Content Type -->
+                    <div class="flex flex-col">
+                        <label
+                            class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1"
+                            >Type</label
+                        >
+                        <select
+                            name="type"
+                            class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                        >
+                            <option value="">All Types</option>
+                            <option value="ARTICLE">Articles</option>
+                            <option value="VIDEO">Videos</option>
+                        </select>
+                    </div>
+
+                    <!-- Filter 3: Date Range -->
+                    <div class="flex flex-col">
+                        <label
+                            class="text-[10px] uppercase font-mono tracking-wider text-slate-400 mb-1"
+                            >Timeframe</label
+                        >
+                        <select
+                            name="date_filter"
+                            class="bg-slate-950 border border-slate-700/80 rounded-lg px-3 py-1.5 text-xs text-slate-200 focus:outline-none focus:border-indigo-500"
+                        >
+                            <option value="">All Time</option>
+                            <option value="today">Added Today</option>
+                            <option value="week">Past 7 Days</option>
+                            <option value="month">Past 30 Days</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Quick Reset Button -->
+                <a
+                    href="/dashboard"
+                    class="text-xs text-slate-400 hover:text-indigo-400 transition underline underline-offset-4 self-end pb-2"
+                >
+                    Reset Filters
+                </a>
+            </form>
+
+            <!-- Table Container -->
+            <div id="content-list">
+                {% include "components/content_list.html" %}
+            </div>
+        </div>
+    </body>
+</html>

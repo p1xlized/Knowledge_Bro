@@ -1,0 +1,146 @@
+<tr
+    id="content-row-{{ item.id }}"
+    class="transition-all duration-200 text-sm {% if not item.is_seen %} bg-slate-900/90 border-l-4 border-l-cyan-400 shadow-md hover:bg-slate-800/70 {% else %} bg-slate-950/40 opacity-50 border-l-4 border-l-transparent hover:opacity-80 hover:bg-slate-900/40 {% endif %}"
+    {%
+    if
+    item.status.value
+    in
+    ["PROCESSING", "PENDING"]
+    %}
+    hx-get="/dashboard/row/{{ item.id }}"
+    hx-trigger="every 3s"
+    hx-swap="outerHTML"
+    {%
+    endif
+    %}
+>
+    <!-- Checkbox Action -->
+    <td class="py-4 px-4">
+        <button
+            hx-patch="/dashboard/row/{{ item.id }}/toggle-seen"
+            hx-target="#content-row-{{ item.id }}"
+            hx-swap="outerHTML"
+            title="Mark as {% if item.is_seen %}Unseen{% else %}Seen{% endif %}"
+            class="flex items-center justify-center transition"
+        >
+            {% if item.is_seen %}
+            <span
+                class="w-5 h-5 rounded border border-slate-700 bg-slate-800/80 text-slate-400 flex items-center justify-center text-xs"
+                >✓</span
+            >
+            {% else %}
+            <span
+                class="w-5 h-5 rounded border-2 border-cyan-400 bg-cyan-400/10 hover:bg-cyan-400/30 flex items-center justify-center transition shadow-sm shadow-cyan-500/20"
+            ></span>
+            {% endif %}
+        </button>
+    </td>
+
+    <!-- Title & Unseen Badge -->
+    <td class="py-4 px-4 max-w-xs">
+        <div class="flex items-center gap-2">
+            <a
+                href="{{ item.link }}"
+                target="_blank"
+                class="font-semibold truncate hover:underline {% if not item.is_seen %}text-slate-100 hover:text-cyan-300{% else %}text-slate-400 line-through{% endif %}"
+            >
+                {{ item.title or item.link }}
+            </a>
+
+            <!-- Unseen Highlight Pill -->
+            {% if not item.is_seen %}
+            <span
+                class="shrink-0 px-1.5 py-0.5 rounded text-[9px] font-extrabold tracking-widest uppercase bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+            >
+                NEW
+            </span>
+            {% endif %}
+        </div>
+
+        <span class="text-[10px] text-slate-500 font-mono block mt-1">
+            {{ item.created_at.strftime('%b %d, %H:%M') if item.created_at else
+            '' }}
+        </span>
+    </td>
+
+    <!-- Content Type -->
+    <td class="py-4 px-4 text-xs">
+        {% if item.type.value == "VIDEO" %}
+        <span
+            class="px-2 py-0.5 rounded font-mono text-[10px] font-medium text-purple-300 bg-purple-950/60 border border-purple-800/50"
+        >
+            🎬 VIDEO
+        </span>
+        {% else %}
+        <span
+            class="px-2 py-0.5 rounded font-mono text-[10px] font-medium text-sky-300 bg-sky-950/60 border border-sky-800/50"
+        >
+            📰 ARTICLE
+        </span>
+        {% endif %}
+    </td>
+
+    <!-- Status Badge -->
+    <td class="py-4 px-4 text-xs">
+        {% if item.status.value == "COMPLETED" %}
+        <span
+            class="px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 text-[10px] font-medium"
+        >
+            Completed
+        </span>
+        {% elif item.status.value == "FAILED" %}
+        <span
+            class="px-2 py-0.5 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/20 text-[10px] font-medium"
+            title="{{ item.error_message }}"
+        >
+            Failed
+        </span>
+        {% else %}
+        <span
+            class="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20 text-[10px] font-medium"
+        >
+            <svg
+                class="animate-spin h-3 w-3 text-amber-400"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+            >
+                <circle
+                    class="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    stroke-width="4"
+                ></circle>
+                <path
+                    class="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+                ></path>
+            </svg>
+            Processing...
+        </span>
+        {% endif %}
+    </td>
+
+    <!-- Summary Output -->
+    <td
+        class="py-4 px-4 text-xs max-w-md {% if not item.is_seen %}text-slate-300{% else %}text-slate-500{% endif %}"
+    >
+        <p class="line-clamp-2 leading-relaxed">{{ item.ai_summary or '—' }}</p>
+    </td>
+
+    <!-- Actions -->
+    <td class="py-4 px-4 text-right">
+        <button
+            hx-delete="/dashboard/row/{{ item.id }}"
+            hx-target="#content-row-{{ item.id }}"
+            hx-swap="outerHTML swap:0.2s"
+            hx-confirm="Are you sure you want to delete this item?"
+            class="text-xs text-slate-500 hover:text-rose-400 transition"
+        >
+            Delete
+        </button>
+    </td>
+</tr>

@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 
 from app.db import init_db
-from app.routes import content_router, tags_router
+from app.routes import content_router, dashboard_router, tags_router
 
 
 @asynccontextmanager
@@ -12,11 +12,12 @@ async def lifespan(app: FastAPI):
     yield
 
 
-app = FastAPI(title="Knowledge Bro API", lifespan=lifespan)
+app = FastAPI(title="Owly", lifespan=lifespan)
 
 # Registers /tags under /api -> Results in /api/tags
 app.include_router(tags_router, prefix="/api")
 app.include_router(content_router, prefix="/api")
+app.include_router(dashboard_router)
 
 
 @app.get("/health")
