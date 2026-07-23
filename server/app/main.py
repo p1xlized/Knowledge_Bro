@@ -20,6 +20,6 @@ app.include_router(content_router, prefix="/api")
 app.include_router(dashboard_router)
 
 
-@app.get("/health")
+@app.get("api/health")
 def health_check():
     return {"status": "ok"}

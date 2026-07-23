@@ -21,13 +21,13 @@ def process_content_background(content_id: int):
     Uses its own DB session context to safely mutate state off the main thread.
     """
     start_time = time.time()
-    logger.info(f"🚀 [Task Started] Processing content_id={content_id}")
+    logger.info(f"[Task Started] Processing content_id={content_id}")
 
     with Session(engine) as session:
         content = session.get(Content, content_id)
         if not content:
             logger.error(
-                f"❌ [Task Aborted] Content ID {content_id} not found in database."
+                f"[Task Aborted] Content ID {content_id} not found in database."
             )
             return
 
@@ -39,34 +39,32 @@ def process_content_background(content_id: int):
 
         try:
             if content.type == ContentType.ARTICLE:
-                logger.info(
-                    f"📰 [Article Pipeline] Extracting text from: {content.link}"
-                )
+                logger.info(f"[Article Pipeline] Extracting text from: {content.link}")
                 full_text = parse_link(content.link)
                 logger.info(
-                    f"  └─ Fetched {len(full_text)} chars. Generating summary..."
+                    f"[Article Pipeline] Fetched {len(full_text)} chars. Generating summary..."
                 )
 
                 summary = generate_summary(full_text)
                 content.ai_summary = summary
                 content.transcript_text = full_text
-                logger.info("  └─ AI summary generated successfully.")
+                logger.info("[Article Pipeline]  AI summary generated successfully.")
 
                 # Generate TTS audio
                 audio_filename = generate_filename(
                     content.title or "article", "audio", "wav"
                 )
-                logger.info(f"  └─ Generating TTS audio file: {audio_filename}")
+                logger.info(
+                    f"[Article Pipeline] Generating TTS audio file: {audio_filename}"
+                )
 
                 # Pass both required arguments: text and filename
                 audio_rel_path = generate_tts_audio(full_text)
                 content.tts_audio_url = str(audio_rel_path)
-                logger.info(f"  └─ TTS saved to: {audio_rel_path}")
+                logger.info(f"[Article Pipeline] TTS saved to: {audio_rel_path}")
 
             elif content.type == ContentType.VIDEO:
-                logger.info(
-                    f"🎬 [Video Pipeline] Downloading audio from: {content.link}"
-                )
+                logger.info(f"[Video Pipeline] Downloading audio from: {content.link}")
                 audio_filename = generate_filename(
                     content.title or "video", "audio", "wav"
                 )
@@ -74,17 +72,19 @@ def process_content_background(content_id: int):
                 # 1. Download audio file to local disk
                 audio_rel_path = get_audio_from_url(content.link, audio_filename)
                 content.video_audio_url = str(audio_rel_path)
-                logger.info(f"  └─ Video audio extracted to: {audio_rel_path}")
+                logger.info(
+                    f"[Video Pipeline]  Video audio extracted to: {audio_rel_path}"
+                )
 
                 # 2. Pass the downloaded WAV file to STT (NOT content.link)
-                logger.info("  └─ Running STT and generating summary...")
+                logger.info("[Video Pipeline]  Running STT and generating summary...")
                 audio_full_path = SERVER_DIR / audio_rel_path
                 transcript = generate_stt_text(audio_full_path)  # <--- FIX HERE
                 summary = generate_summary(transcript)
 
                 content.ai_summary = summary
                 content.transcript_text = transcript
-                logger.info("  └─ STT and summary completed.")
+                logger.info("[Video Pipeline] STT and summary completed.")
 
             # 2. Mark as COMPLETED
             content.status = ContentStatus.COMPLETED
@@ -94,7 +94,7 @@ def process_content_background(content_id: int):
 
             elapsed = time.time() - start_time
             logger.info(
-                f"✅ [Task Completed] content_id={content_id} processed in {elapsed:.2f}s"
+                f"[Task Completed] content_id={content_id} processed in {elapsed:.2f}s"
             )
 
         except Exception as e:
@@ -111,5 +111,5 @@ def process_content_background(content_id: int):
 
             elapsed = time.time() - start_time
             logger.exception(
-                f"❌ [Task Failed] content_id={content_id} failed after {elapsed:.2f}s. Error: {e}"
+                f"[Task Failed] content_id={content_id} failed after {elapsed:.2f}s. Error: {e}"
             )
