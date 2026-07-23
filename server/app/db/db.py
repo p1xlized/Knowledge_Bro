@@ -1,6 +1,11 @@
+from pathlib import Path
+
 from sqlmodel import Session, SQLModel, create_engine
 
-sqlite_file_name = "database.db"
+# Get the directory where this specific file (e.g., app/db/session.py) lives
+DB_DIR = Path(__file__).resolve().parent
+sqlite_file_name = DB_DIR / "database.db"
+
 sqlite_url = f"sqlite:///{sqlite_file_name}"
 
 # check_same_thread=False allows FastAPI's async execution to safely use SQLite

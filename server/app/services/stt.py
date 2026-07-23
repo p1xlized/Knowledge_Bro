@@ -7,7 +7,7 @@ from faster_whisper import WhisperModel
 model = WhisperModel("base.en", device="cpu", compute_type="int8")
 
 
-def speech_to_text(audio_path: str | Path) -> str:
+def generate_stt_text(audio_path: str | Path) -> str:
     path = Path(audio_path)
     if not path.exists():
         raise FileNotFoundError(f"Audio file not found: {path}")
@@ -27,7 +27,7 @@ if __name__ == "__main__":
 
     if test_wav.exists():
         print("Transcribing with faster-whisper...")
-        text = speech_to_text(test_wav)
+        text = generate_stt_text(test_wav)
         print(f"\nResult:\n{text}")
     else:
         print(f"File not found: {test_wav}")

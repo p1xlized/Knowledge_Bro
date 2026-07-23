@@ -10,7 +10,7 @@ load_dotenv()
 DEFAULT_MODEL = "openrouter/openrouter/free"
 
 
-def generate_bullet_points(
+def generate_summary(
     text: str,
     user_api_key: Optional[str] = None,
     user_model: Optional[str] = None,
@@ -95,4 +95,4 @@ if __name__ == "__main__":
     """
 
     print("--- Processing Long Transcript via OpenRouter ---")
-    print(generate_bullet_points(sample_text))
+    print(generate_summary(sample_text))

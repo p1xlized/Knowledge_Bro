@@ -12,3 +12,9 @@ server/output/speech/
 server/models/tts/
 server/models/stt/vosk-model-en-us-0.22/
 server/.env
+server/app/services/__pycache__/
+server/app/__pycache__/
+server/app/routes/__pycache__/
+server/app/db/__pycache__/
+server/app/utils/__pycache__/
+server/output/audio/
