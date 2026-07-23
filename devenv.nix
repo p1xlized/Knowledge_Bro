@@ -8,7 +8,8 @@
   packages = with pkgs; [
     zlib
     stdenv.cc.cc.lib
-    ffmpeg 
+    ffmpeg
+    nodejs
   ];
   # https://devenv.sh/languages/
   languages.python = {

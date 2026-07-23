@@ -11,6 +11,7 @@ from app.services.tts import generate_tts_audio
 from app.services.video import get_audio_from_url
 from app.utils import generate_filename, parse_link
 
+SERVER_DIR = Path(__file__).resolve().parents[2]
 logger = logging.getLogger("uvicorn.error")
 
 
@@ -69,12 +70,18 @@ def process_content_background(content_id: int):
                 audio_filename = generate_filename(
                     content.title or "video", "audio", "wav"
                 )
+
+                # 1. Download audio file to local disk
                 audio_rel_path = get_audio_from_url(content.link, audio_filename)
                 content.video_audio_url = str(audio_rel_path)
                 logger.info(f"  └─ Video audio extracted to: {audio_rel_path}")
 
+                # 2. Pass the downloaded WAV file to STT (NOT content.link)
                 logger.info("  └─ Running STT and generating summary...")
-                summary, transcript = generate_stt_text(content.link)
+                audio_full_path = SERVER_DIR / audio_rel_path
+                transcript = generate_stt_text(audio_full_path)  # <--- FIX HERE
+                summary = generate_summary(transcript)
+
                 content.ai_summary = summary
                 content.transcript_text = transcript
                 logger.info("  └─ STT and summary completed.")
